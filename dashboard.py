@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-import matplotlib.ticker as mticker
+
 
 st.set_page_config(
     page_title="Nike Global Dashboard",
@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide",
 )
 
-# ================= ESTILO =================
+
 st.markdown("""
 <style>
 .stApp { background-color: #111111; color: #FFFFFF; }
@@ -25,13 +25,24 @@ hr { border-color: #333333; }
 </style>
 """, unsafe_allow_html=True)
 
-# ================= TAXAS =================
-TAXA_USD = {
-    'USD': 1.0, 'EUR': 1.08, 'GBP': 1.27, 'CAD': 0.74, 'AUD': 0.63,
-    'BRL': 0.18, 'JPY': 0.0066, 'CNY': 0.138, 'INR': 0.012
+# As taxas foram fixadas para padronização da análise,
+# pois o dataset não fornece conversão direta entre moedas.
+taxa_usd = {
+    'USD': 1.0,    'EUR': 1.08,   'GBP': 1.27,   'CAD': 0.74,
+    'AUD': 0.63,   'NZD': 0.58,   'CHF': 1.13,   'DKK': 0.145,
+    'NOK': 0.09,   'SEK': 0.09,   'CZK': 0.044,  'PLN': 0.25,
+    'HUF': 0.0027, 'RON': 0.22,   'BGN': 0.55,   'HRK': 0.14,
+    'ILS': 0.27,   'TRY': 0.028,  'ZAR': 0.054,  'MXN': 0.051,
+    'BRL': 0.18,   'CLP': 0.001,  'COP': 0.00024,'ARS': 0.001,
+    'INR': 0.012,  'IDR': 0.000062,'MYR': 0.22,  'PHP': 0.017,
+    'SGD': 0.74,   'THB': 0.028,  'TWD': 0.031,  'VND': 0.000039,
+    'KRW': 0.00071,'JPY': 0.0066, 'CNY': 0.138,  'EGP': 0.020,
+    'HKD': 0.13,   'SAR': 0.27,   'AED': 0.27
 }
 
-# ================= LOAD =================
+
+
+
 @st.cache_data
 def load_data():
     df = pd.read_csv("Global_Nike.csv")
@@ -48,7 +59,7 @@ def load_data():
     df = df.dropna(subset=["price_local", "category", "country_code", "currency"])
 
     # conversão otimizada (sem apply)
-    df["price_usd"] = df["price_local"] * df["currency"].map(TAXA_USD)
+    df["price_usd"] = df["price_local"] * df["currency"].map(taxa_usd)
 
     # remover valores inválidos
     df = df.dropna(subset=["price_usd"])
@@ -60,7 +71,7 @@ def load_data():
 
 df = load_data()
 
-# ================= SIDEBAR =================
+
 with st.sidebar:
     st.markdown("## 🎛️ Filtros")
 
@@ -84,7 +95,7 @@ with st.sidebar:
         (50.0, 200.0)
     )
 
-# ================= FILTRO =================
+#  FILTRO 
 df_f = df[
     (df["country_code"].isin(pais)) &
     (df["category"].isin(cat)) &
@@ -92,10 +103,10 @@ df_f = df[
     (df["price_usd"] <= price_range[1])
 ]
 
-# ================= HEADER =================
+#  HEADER 
 st.title("👟 Nike Global Dashboard")
 
-# ================= KPIs =================
+#  KPIs 
 c1, c2, c3, c4 = st.columns(4)
 
 c1.metric("Produtos", len(df_f))
@@ -103,7 +114,7 @@ c2.metric("Países", df_f["country_code"].nunique())
 c3.metric("Preço mediano", f"${df_f['price_usd'].median():.0f}")
 c4.metric("Desconto mediano", f"{df_f['discount_pct'].median():.0f}%")
 
-# ================= GRÁFICO 1 =================
+# GRÁFICO 1 
 st.subheader("Preço mediano por país")
 
 g1 = df_f.groupby("country_code")["price_usd"].median().sort_values()
@@ -113,7 +124,7 @@ ax1.bar(g1.index, g1.values)
 ax1.tick_params(axis='x', rotation=45)
 st.pyplot(fig1)
 
-# ================= GRÁFICO 2 =================
+# GRÁFICO 2 
 st.subheader("Heatmap preço por categoria")
 
 pivot = df_f.pivot_table(
@@ -127,7 +138,7 @@ fig2, ax2 = plt.subplots(figsize=(10,5))
 sns.heatmap(pivot, cmap="Reds", ax=ax2)
 st.pyplot(fig2)
 
-# ================= GRÁFICO 3 =================
+# GRÁFICO 3 
 st.subheader("Preço vs Desconto")
 
 resumo = df_f.groupby("country_code").agg({
