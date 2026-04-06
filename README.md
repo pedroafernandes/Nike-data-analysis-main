@@ -8,6 +8,13 @@ Análise de Preços: Investigar como a Nike posiciona seus preços em diferentes
 Identificação de Outliers: Detectar países com preços muito acima ou abaixo da média global para entender estratégias locais.
 
 Análise Preditiva: Criar bases para futuras análises de faturamento cruzando o poder de compra de cada país com os preços praticados.
+## 🤝 Trabalho em Dupla
+
+Este projeto foi desenvolvido em dupla, com colaboração entre os integrantes em todas as etapas.
+alunos:
+Pedro Antônio de Souza Fernandes Filho
+João Paulo Koury de Mendonça
+
 
 ## 👥 Público-alvo
 
