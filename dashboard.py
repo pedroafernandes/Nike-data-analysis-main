@@ -229,38 +229,117 @@ plt.close(fig3)
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
-st.subheader("🔵 Preço vs Desconto")
-
+st.subheader("🔵 Preço mediano vs Desconto mediano por país")
+ 
 resumo = (
     df_f[df_f['discount_pct'] > 0]
     .groupby('country_code')
-    .agg(preco=('price_usd', 'median'), desconto=('discount_pct', 'median'))
+    .agg(
+        preco=('price_usd', 'median'),
+        desconto=('discount_pct', 'median')
+    )
     .reset_index()
 )
-
-fig4, ax4 = plt.subplots()
-
-ax4.scatter(resumo['preco'], resumo['desconto'])
-
-ax4.set_xlabel("Preço")
-ax4.set_ylabel("Desconto")
-
+ 
+fig4, ax4 = plt.subplots(figsize=(12, 6))
+ 
+scatter = ax4.scatter(
+    resumo['preco'],
+    resumo['desconto'],
+    c=resumo['desconto'],
+    cmap='Reds',
+    s=80,
+    zorder=3
+)
+ 
+plt.colorbar(scatter, ax=ax4, label='Desconto mediano (%)')
+ 
+for _, row in resumo.iterrows():
+    ax4.annotate(
+        row['country_code'],
+        (row['preco'], row['desconto']),
+        textcoords="offset points",
+        xytext=(6, 4),
+        fontsize=7,
+        color='#cccccc'
+    )
+ 
+if len(resumo) > 1:
+    coefs = np.polyfit(resumo['preco'], resumo['desconto'], 1)
+    linha_tendencia = np.poly1d(coefs)
+    x_linha = np.linspace(resumo['preco'].min(), resumo['preco'].max(), 100)
+ 
+    ax4.plot(
+        x_linha,
+        linha_tendencia(x_linha),
+        color='#FFDD00',
+        linestyle='--',
+        linewidth=1.5,
+        label='Tendência linear',
+        zorder=2
+    )
+    ax4.legend()
+ 
+ax4.set_xlabel("Preço mediano (USD)")
+ax4.set_ylabel("Desconto mediano (%)")
+ax4.set_title("Relação entre preço e desconto por país", color=NIKE_WHITE, pad=12)
+ax4.xaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f'${x:.0f}'))
+ax4.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f'{x:.0f}%'))
+ax4.grid(axis='both')
+ 
 st.pyplot(fig4)
 plt.close(fig4)
-
+ 
 st.markdown("<hr>", unsafe_allow_html=True)
-
+ 
+ 
+# ===================== SUBSTITUIR AS CONCLUSÕES =====================
+ 
 st.subheader("📝 Conclusões")
-
+ 
+pais_mais_caro    = df_f.groupby('country_code')['price_usd'].median().idxmax()
+preco_mais_caro   = df_f.groupby('country_code')['price_usd'].median().max()
+pais_mais_barato  = df_f.groupby('country_code')['price_usd'].median().idxmin()
+preco_mais_barato = df_f.groupby('country_code')['price_usd'].median().min()
+ 
+df_com_desc = df_f[df_f['discount_pct'] > 0]
+if not df_com_desc.empty:
+    pais_maior_desc = df_com_desc.groupby('country_code')['discount_pct'].median().idxmax()
+    maior_desc      = df_com_desc.groupby('country_code')['discount_pct'].median().max()
+else:
+    pais_maior_desc, maior_desc = "N/A", 0
+ 
+cat_mais_cara    = df_f.groupby('category')['price_usd'].median().idxmax()
+pct_com_desconto = (df_f['discount_pct'] > 0).mean() * 100
+variacao         = ((preco_mais_caro - preco_mais_barato) / preco_mais_barato) * 100
+ 
 c1, c2, c3 = st.columns(3)
 
 with c1:
-    st.markdown("📌 Preços consistentes globalmente")
+    st.markdown(f"""
+    <div style='background:#1e3a5f;border-radius:10px;padding:16px'>
+        <b>💰 Disparidade de preços</b><br><br>
+        O país com maior preço mediano é <b>{pais_mais_caro}</b> (${preco_mais_caro:.0f}),
+        enquanto <b>{pais_mais_barato}</b> tem o menor (${preco_mais_barato:.0f}).
+        Variação de <b>{variacao:.0f}%</b> entre os extremos.
+    </div>
+    """, unsafe_allow_html=True)
 
 with c2:
-    st.markdown("⚡ Existem outliers relevantes")
+    st.markdown(f"""
+    <div style='background:#3a2e1e;border-radius:10px;padding:16px'>
+        <b>🏷️ Política de descontos</b><br><br>
+        Apenas <b>{pct_com_desconto:.0f}%</b> dos produtos têm desconto.
+        O maior desconto mediano é em <b>{pais_maior_desc}</b> ({maior_desc:.0f}%),
+        indicando promoções concentradas em mercados específicos.
+    </div>
+    """, unsafe_allow_html=True)
 
 with c3:
-    st.markdown("✅ Estratégias variam por país")
-
-    
+    st.markdown(f"""
+    <div style='background:#1e3a2a;border-radius:10px;padding:16px'>
+        <b>👕 Categoria premium</b><br><br>
+        A categoria com maior preço mediano é <b>{cat_mais_cara}</b>,
+        refletindo o posicionamento de produtos de maior valor agregado.
+    </div>
+    """, unsafe_allow_html=True)
