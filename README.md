@@ -8,7 +8,24 @@ Análise de Preços: Investigar como a Nike posiciona seus preços em diferentes
 Identificação de Outliers: Detectar países com preços muito acima ou abaixo da média global para entender estratégias locais.
 
 Análise Preditiva: Criar bases para futuras análises de faturamento cruzando o poder de compra de cada país com os preços praticados.
+## 🤝 Trabalho em Dupla
 
+Este projeto foi desenvolvido em dupla, com colaboração entre os integrantes em todas as etapas.
+alunos:
+Pedro Antônio de Souza Fernandes Filho
+João Paulo Koury de Mendonça
+
+
+## 👥 Público-alvo
+
+Este dashboard foi desenvolvido para:
+
+- **Estratégia de precificação global** – times da Nike que monitoram alinhamento de preços em 45 países e detectam outliers estratégicos (ex: Índia com preço alto, Egito com preço baixo).
+- **Analistas de dados** – que desejam replicar ou estender a análise com filtros interativos (país, categoria, faixa de preço) e visualizações prontas (heatmaps, gráficos de barras, scatter plot).
+- **Gestores de categorias** – para comparar medianas de preço e desconto entre `CLOTHING`, `FOOTWEAR`, `ACCESSORIES` e outros segmentos.
+- **Pesquisadores de mercado** – interessados em como uma marca premium mantém consistência global (maioria dos países entre $80–$100 USD) enquanto adapta descontos localmente.
+- **Estudantes de Business Intelligence** – como exemplo de dashboard executivo com métricas claras, design escuro e código reproduzível em Streamlit.
+- 
 ## 🛠️ Tecnologias e Bibliotecas
 As seguintes ferramentas foram utilizadas no desenvolvimento:
 
