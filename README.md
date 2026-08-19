@@ -1,6 +1,8 @@
 
 # 👟 Nike Global Data Analysis & Dashboard
 Este projeto realiza uma análise detalhada do catálogo global da Nike em 2026, focando em estratégias de precificação, descontos e variações de mercado entre 45 países. Além da análise exploratória em Python, o projeto conta com um dashboard interativo feito em Streamlit.
+<img width="1912" height="960" alt="image" src="https://github.com/user-attachments/assets/da48c400-7fc7-4233-8810-6f08f97f5a87" />
+
 
 ## 🎯 Objetivos do Projeto
 Análise de Preços: Investigar como a Nike posiciona seus preços em diferentes mercados globais após a conversão para uma moeda comum (USD).
