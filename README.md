@@ -96,7 +96,6 @@ Certifique-se de ter o Python instalado. Depois, siga os passos:
 
 ```bash
 pip install streamlit pandas seaborn matplotlib numpy
-streamlit run dashboard.py
 ```
 2. Execute a aplicação:
 
